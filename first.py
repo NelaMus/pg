@@ -4,7 +4,7 @@ def sudy_nebo_lichy(cislo):
         SudeLiche = "sudé"
     else:
         SudeLiche = "liché"
-    return f"Číslo", cislo, "je", SudeLiche, "."
+    return f"Číslo {cislo} je {SudeLiche}."
 
 # Volání funkce a ukládání návratových hodnot do proměnných
 veta1 = sudy_nebo_lichy(5)
