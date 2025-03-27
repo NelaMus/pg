@@ -24,16 +24,21 @@ def get_flights_from_website(url: str):
     
     # Pokus o získání dat
     try:
-        flight_elements = driver.find_elements(By.CSS_SELECTOR, ".flight-card")
+        flight_elements = driver.find_elements(By.CSS_SELECTOR, ".flight-card")  # Získáme všechny karty letů
         
         for flight in flight_elements:
-            airline = "Wizz Air"  # Zde předpokládáme, že letecká společnost je vždy Wizz Air
-            price = float(flight.find_element(By.CSS_SELECTOR, ".current-price").text.strip("€").replace(",", "."))
-            departure_time = flight.find_element(By.CSS_SELECTOR, ".flight-card__time--departure").text
-            arrival_time = flight.find_element(By.CSS_SELECTOR, ".flight-card__time--arrival").text
+            # Čas odletu
+            departure_time = flight.find_element(By.CSS_SELECTOR, ".hour").text  # Najdeme čas v <time class="hour">
+            
+            # Čas přistání
+            arrival_time = flight.find_element(By.CSS_SELECTOR, ".hour.align-right").text  # Najdeme čas v <time class="hour align-right">
+            
+            # Cena
+            price_text = flight.find_element(By.CSS_SELECTOR, ".current-price").text  # Cena je v <div class="current-price">
+            price = float(price_text.strip("€").replace(",", ".").replace("‎", "").strip())  # Čistá cena
             
             flights.append({
-                "airline": airline,
+                "airline": "Wizz Air",  # Zde můžeme pevně nastavit Wizz Air jako leteckou společnost
                 "price": price,
                 "departure_time": departure_time,
                 "arrival_time": arrival_time
@@ -54,5 +59,3 @@ async def get_flights():
     flight_objects = [Flight(**flight) for flight in flights_data]
     return FlightResponse(flights=flight_objects)
 
-# Pokud spustíš aplikaci, použij uvicorn pro nasazení FastAPI:
-# uvicorn main:app --reload
